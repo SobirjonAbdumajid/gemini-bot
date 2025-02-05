@@ -1,15 +1,31 @@
-# pip install pyTelegramBotAPI
-# pip install google-generativeai
+# pip install aiogram python-dotenv google-generativeai
 
-import telebot
+import os
+import logging
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import CommandStart
+from aiogram.types import Message
+from aiogram.enums import ParseMode
+from aiogram.client.default import DefaultBotProperties
 import google.generativeai as genai
-import time
+from dotenv import load_dotenv
 
-# Configure your bot and AI model here
-TELEGRAM_TOKEN = 'TOKEN'
-GEN_AI_API_KEY = 'API_KEY'
+# Load environment variables
+load_dotenv()
 
-bot = telebot.TeleBot(TELEGRAM_TOKEN, parse_mode=None)  # parse_mode is None to send plain text
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# Get tokens from environment variables
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+GEN_AI_API_KEY = os.getenv("GEN_AI_API_KEY")
+
+# Initialize bot and dispatcher
+bot = Bot(token=TELEGRAM_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+dp = Dispatcher()
+
+# Configure Google Generative AI
 genai.configure(api_key=GEN_AI_API_KEY)
 
 # Set up the model configuration
@@ -27,9 +43,12 @@ safety_settings = [
     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
 ]
 
-model = genai.GenerativeModel(model_name="gemini-1.0-pro",
-                              generation_config=generation_config,
-                              safety_settings=safety_settings)
+# Initialize the Gemini model
+model = genai.GenerativeModel(
+    model_name="gemini-1.0-pro",
+    generation_config=generation_config,
+    safety_settings=safety_settings,
+)
 
 # Start an empty chat history
 convo = model.start_chat(history=[])
@@ -41,18 +60,17 @@ def clean_text(text):
         text = text.replace(symbol, ' ')
     return text
 
-# Define command handlers
-@bot.message_handler(commands=['start', 'help'])
-def send_welcome(message):
+# Command handler for /start and /help
+@dp.message(CommandStart())
+async def send_welcome(message: Message):
     welcome_text = "Hello! This Bot is made by Sobirjon Abdumajidov. How can I assist you today?"
-    bot.reply_to(message, welcome_text)
+    await message.answer(welcome_text)
 
-# Define a handler for all other messages
-@bot.message_handler(func=lambda message: True)
-def handle_message(message):
+# Handler for all other messages
+@dp.message()
+async def handle_message(message: types.Message):
     # Simulate typing action
-    bot.send_chat_action(message.chat.id, 'typing')
-    time.sleep(1)  # Wait a bit to simulate thinking time
+    await bot.send_chat_action(message.chat.id, action="typing")
 
     # Process the message through the AI model
     convo.send_message(message.text)
@@ -60,7 +78,11 @@ def handle_message(message):
 
     # Clean the response from Markdown symbols and reply
     clean_response = clean_text(response)
-    bot.reply_to(message, clean_response)
+    await message.answer(clean_response)
 
 # Start the bot
-if __name__ == '__main__': bot.infinity_polling()
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())

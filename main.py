@@ -45,7 +45,7 @@ safety_settings = [
 
 # Initialize the Gemini model
 model = genai.GenerativeModel(
-    model_name="gemini-1.0-pro",
+    model_name="gemini-1.5-flash",
     generation_config=generation_config,
     safety_settings=safety_settings,
 )
@@ -69,11 +69,17 @@ async def send_welcome(message: Message):
 # Handler for all other messages
 @dp.message()
 async def handle_message(message: types.Message):
+    text = message.text.strip()  # Remove extra spaces
+
+    if not text:
+        await message.answer("⚠️ Please send a non-empty message.")
+        return
+
     # Simulate typing action
     await bot.send_chat_action(message.chat.id, action="typing")
 
     # Process the message through the AI model
-    convo.send_message(message.text)
+    convo.send_message(text)
     response = convo.last.text
 
     # Clean the response from Markdown symbols and reply

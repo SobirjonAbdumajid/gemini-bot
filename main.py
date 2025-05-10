@@ -63,8 +63,18 @@ def clean_text(text):
 # Command handler for /start and /help
 @dp.message(CommandStart())
 async def send_welcome(message: Message):
-    welcome_text = f"Hello {html.bold(message.from_user.full_name)}! This Bot is made by Sobirjon Abdumajidov. How can I assist you today?"
-    await message.answer(welcome_text)
+    welcome_text = (
+        f"Hello {html.bold(message.from_user.full_name)}!\n\n"
+        "This bot is created by Sobirjon Abdumajidov.\n"
+        "Check out my work and profiles below:\n\n"
+        f"🔗 <a href='https://t.me/fikrboy'>Telegram Channel</a>\n"
+        f"🎥 <a href='https://youtube.com/@Sobirjon-Abdumajid'>YouTube</a>\n"
+        f"💼 <a href='https://linkedin.com/in/Sobirjon-Abdumajidov'>LinkedIn</a>\n"
+        f"💻 <a href='https://github.com/SobirjonAbdumajid'>GitHub</a>\n\n"
+        "How can I assist you today?"
+    )
+
+    await message.answer(welcome_text, parse_mode="HTML")
 
 # Handler for all other messages
 @dp.message()

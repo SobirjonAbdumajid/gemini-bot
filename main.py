@@ -3,7 +3,7 @@
 import os
 import logging
 import asyncio
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, html
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.enums import ParseMode
@@ -63,7 +63,7 @@ def clean_text(text):
 # Command handler for /start and /help
 @dp.message(CommandStart())
 async def send_welcome(message: Message):
-    welcome_text = "Hello! This Bot is made by Sobirjon Abdumajidov. How can I assist you today?"
+    welcome_text = f"Hello {html.bold(message.from_user.full_name)}! This Bot is made by Sobirjon Abdumajidov. How can I assist you today?"
     await message.answer(welcome_text)
 
 # Handler for all other messages

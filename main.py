@@ -65,7 +65,7 @@ def clean_text(text):
 async def send_welcome(message: Message):
     welcome_text = (
         f"Hello {html.bold(message.from_user.full_name)}!\n\n"
-        "This bot is created by Sobirjon Abdumajidov.\n"
+        "This bot is made by Sobirjon Abdumajidov.\n"
         "Check out my work and profiles below:\n\n"
         f"🔗 <a href='https://t.me/fikrboy'>Telegram Channel</a>\n"
         f"🎥 <a href='https://youtube.com/@Sobirjon-Abdumajid'>YouTube</a>\n"

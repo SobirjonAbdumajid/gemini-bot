@@ -1,35 +1,35 @@
 . PHONY: help build up down restart logs shell deploy
 
 help:  ## Show this help message
-	@echo 'Usage: make [target]'
-	@echo ''
-	@echo 'Available targets:'
-	@awk 'BEGIN {FS = ":.*? ## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+        @echo 'Usage: make [target]'
+        @echo ''
+        @echo 'Available targets:'
+        @awk 'BEGIN {FS = ":.*? ## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 build: ## Build Docker image
-	docker-compose build
+        docker compose build
 
 up: ## Start the bot
-	docker-compose up -d
+        docker compose up -d
 
 down: ## Stop the bot
-	docker-compose down
+        docker compose down
 
 restart: ## Restart the bot
-	docker-compose restart
+        docker compose restart
 
 logs: ## Show bot logs
-	docker-compose logs -f
+        docker compose logs -f
 
 shell: ## Open shell in container
-	docker exec -it gemini-bot /bin/bash
+        docker exec -it gemini-bot /bin/bash
 
 deploy: ## Deploy the bot
-	bash deploy.sh
+        bash deploy.sh
 
 status: ## Show container status
-	docker-compose ps
+        docker compose ps
 
 clean: ## Clean up Docker resources
-	docker-compose down -v
-	docker system prune -f
+        docker compose down -v
+        docker system prune -f

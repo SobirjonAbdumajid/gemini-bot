@@ -51,7 +51,7 @@ git pull origin main
 
 # Stop existing container
 print_status "Stopping existing containers..."
-docker-compose down
+docker compose down
 
 # Remove old images
 print_status "Cleaning up old Docker images..."
@@ -59,11 +59,11 @@ docker image prune -f
 
 # Build new image
 print_status "Building Docker image..."
-docker-compose build --no-cache
+docker compose build --no-cache
 
 # Start the bot
 print_status "Starting the bot..."
-docker-compose up -d
+docker compose up -d
 
 # Wait for container to be healthy
 print_status "Waiting for bot to start..."
@@ -74,15 +74,15 @@ if [ "$(docker ps -q -f name=gemini-bot)" ]; then
     print_success "✅ Gemini Bot deployed successfully!"
     echo ""
     echo "📊 Container Status:"
-    docker-compose ps
+    docker compose ps
     echo ""
     echo "📝 Logs:"
-    docker-compose logs --tail=20
+    docker compose logs --tail=20
 else
     print_error "❌ Deployment failed! Container is not running."
     print_status "Rolling back to previous version..."
     tar -xzf "$BACKUP_DIR/gemini-bot_$DATE.tar.gz" -C "$BOT_DIR"
-    docker-compose up -d
+    docker compose up -d
     exit 1
 fi
 

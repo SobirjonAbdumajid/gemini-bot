@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  gemini-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gemini-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Tashkent
+      - PYTHONUNBUFFERED=1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - bot-network
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus:  '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+networks:
+  bot-network:
+    driver: bridge

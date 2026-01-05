@@ -2,6 +2,7 @@
 
 import os
 import logging
+from logging.handlers import RotatingFileHandler
 import asyncio
 from aiogram import Bot, Dispatcher, types, html
 from aiogram.filters import CommandStart
@@ -14,8 +15,23 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Create logs directory
+os.makedirs('logs', exist_ok=True)
+
+# Configure logging with rotation
+logging.basicConfig(
+    level=os.getenv('LOG_LEVEL', 'INFO'),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        RotatingFileHandler(
+            'logs/bot.log',
+            maxBytes=10485760,  # 10MB
+            backupCount=5
+        ),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Get tokens from environment variables
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")

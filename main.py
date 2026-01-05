@@ -28,26 +28,15 @@ dp = Dispatcher()
 # Configure Google Generative AI
 genai.configure(api_key=GEN_AI_API_KEY)
 
-# Set up the model configuration
-generation_config = {
-    "temperature": 0.9,
-    "top_p": 1,
-    "top_k": 1,
-    "max_output_tokens": 2048,
-}
-
-safety_settings = [
-    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-]
-
-# Initialize the Gemini model
+# Initialize the Gemini model with configuration
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
-    generation_config=generation_config,
-    safety_settings=safety_settings,
+    model_name="gemini-flash-latest",
+    generation_config={
+        "temperature": 0.9,
+        "top_p": 1,
+        "top_k": 40,
+        "max_output_tokens": 2048,
+    }
 )
 
 # Start an empty chat history
